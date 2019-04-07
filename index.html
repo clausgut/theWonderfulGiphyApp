@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>TheWonderfulGiphyPage</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+
+</head>
+
+<body>
+    <div class="container">
+        <!--Div space for my first title-->
+        <h1>ClickmeBaby</h1>
+    </div>
+    <div id="buttons-view"></div>
+    <!--Buttons will show here-->
+
+    <form id="movie-form">
+        <label for="movie-input"><i class="far fa-laugh-beam"></i></label>
+        <input type="text" id="movie-input">
+        <br>
+
+        <input id="add-movie" type="submit" value="S">
+    </form>
+    <div id="giphy-view"></div>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+    var giphySections = ["dog", "B", "C", "D", "E"];
+
+    function displayGiphy() {
+        var giphyView = $(this).attr("data-name");
+        var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=9orkbREC55seTmOabVLvxjL58IDDB0fZ&q=" + giphyView + "&limit=10&offset=0&rating=G&lang=en";
+
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function (response) {
+
+            var giphyDiv = $("<div class='giphyView'>");
+            var rating = response.rating;
+            var pOne = $("<p>").text("Rating: " + rating);
+            giphyDiv.prepend(pOne);
+            $("#giphy-view").prepend(giphyDiv);
+            console.log($(displayGiphy));
+        });
+    }
+
+    function renderButtons() {
+
+
+        $("#buttons-view").empty();
+
+        // Looping through the array of movies
+        for (var i = 0; i < giphySections.length; i++) {
+
+
+            var principal = $("<button>");
+            // Adding a class of movie-btn to our button
+            principal.addClass("g-btn");
+            // Adding a data-attribute
+            principal.attr("data-name", giphySections[i]);
+            // Providing the initial button text
+            principal.text(giphySections[i]);
+            // Adding the button to the buttons-view div
+            $("#buttons-view").append(principal);
+        }
+    }
+
+    $("#add-giphy").on("click", function (event) {
+        event.preventDefault();
+        // This line grabs the input from the textbox
+        var giph = $("#giphy-input").val().trim();
+
+        // Adding movie from the textbox to our array
+        giphySections.push(giph);
+
+        // Calling renderButtons which handles the processing of our movie array
+        renderButtons();
+    });
+
+    // Adding a click event listener to all elements with a class of "movie-btn"
+    $(document).on("click", ".g-btn", displayGiphy);
+
+    // Calling the renderButtons function to display the intial buttons
+    renderButtons();
+
+</script>
+</div>
+</body>
+
+</html>
