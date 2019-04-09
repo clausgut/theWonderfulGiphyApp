@@ -18,12 +18,12 @@
     <div id="buttons-view"></div>
     <!--Buttons will show here-->
 
-    <form id="movie-form">
-        <label for="movie-input"><i class="far fa-laugh-beam"></i></label>
-        <input type="text" id="movie-input">
+    <form id="giph-form">
+        <label for="giph-input"><i class="far fa-laugh-beam"></i></label>
+        <input type="text" id="giph-input">
         <br>
 
-        <input id="add-movie" type="submit" value="S">
+        <input id="add-giph" type="submit" value="Add more giphs sweety">
     </form>
     <div id="giphy-view"></div>
 </body>
@@ -31,26 +31,60 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript">
 
-    var giphySections = ["dog", "B", "C", "D", "E"];
+        $(".gif").on("click", function () {
+            var state = $(this).attr("data-state");
+
+
+            if (state === "still") {
+                $(this).attr("src", $(this).attr("data-animate"));
+                $(this).attr("data-state", "animate");
+            }
+
+            else {
+                $(this).attr("src", $(this).attr("data-animate"));
+                $(this).attr("data-state", "still");
+
+            }
+        });
+    
+
+    var giphySections = ["Love", "Happy", "Sad", "Angry", "Upset"];
 
     function displayGiphy() {
         var giphyView = $(this).attr("data-name");
-        var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=9orkbREC55seTmOabVLvxjL58IDDB0fZ&q=" + giphyView + "&limit=10&offset=0&rating=G&lang=en";
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + giphyView + "&api_key=9orkbREC55seTmOabVLvxjL58IDDB0fZ&limit=10";
 
         $.ajax({
             url: queryURL,
             method: "GET"
-        }).then(function (response) {
+        })
+            .then(function (response) {
+                var giphySections = response.data;
+                for (var i = 0; i < giphySections.length; i++) {
 
-            var giphyDiv = $("<div class='giphyView'>");
-            var rating = response.rating;
-            var pOne = $("<p>").text("Rating: " + rating);
-            giphyDiv.prepend(pOne);
-            $("#giphy-view").prepend(giphyDiv);
-            console.log($(displayGiphy));
-        });
-    }
 
+                    var giphyDiv = $("<div>");
+                    var rating = giphySections[i].rating;
+                    var pOne = $("<p>").text("Rating: " + giphySections[i].rating);
+                    var image = $("<img>");
+
+                    image.attr("src", giphySections[i].images.original_still.url);
+                    image.attr("data-still", giphySections[i].images.original_still.url);
+                    image.attr("data-animate", giphySections[i].images.original.url);
+                    image.attr("data-state", "still");
+                    image.attr("class", "gif");
+
+                    giphyDiv.append(pOne);
+                    giphyDiv.append(image);
+
+
+                    $("#giphy-view").prepend(giphyDiv);
+                }
+            });
+
+    };
+
+    
     function renderButtons() {
 
 
@@ -69,19 +103,22 @@
             principal.text(giphySections[i]);
             // Adding the button to the buttons-view div
             $("#buttons-view").append(principal);
+            console.log(principal);
         }
     }
 
-    $("#add-giphy").on("click", function (event) {
+    $("#add-giph").on("click", function (event) {
         event.preventDefault();
         // This line grabs the input from the textbox
-        var giph = $("#giphy-input").val().trim();
+        var giph = $("#giph-input").val().trim();
 
         // Adding movie from the textbox to our array
         giphySections.push(giph);
+        console.log(giphySections);
 
         // Calling renderButtons which handles the processing of our movie array
         renderButtons();
+        return;
     });
 
     // Adding a click event listener to all elements with a class of "movie-btn"
@@ -91,7 +128,7 @@
     renderButtons();
 
 </script>
-</div>
 </body>
+
 
 </html>
